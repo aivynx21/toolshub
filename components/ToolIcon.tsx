@@ -61,5 +61,13 @@ export function ToolIcon({ name }: { name: Tool["icon"] }) {
           <circle cx="18" cy="17" r="2" />
         </svg>
       );
+    case "pdf":
+      return (
+        <svg {...common} aria-hidden>
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <path d="M14 2v6h6" />
+          <path d="M8 13h1M8 17h4M12 13h4" />
+        </svg>
+      );
   }
 }
