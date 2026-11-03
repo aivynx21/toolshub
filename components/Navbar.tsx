@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { InstallButton } from "./InstallButton";
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -47,14 +48,17 @@ export function Navbar() {
           >
             Browse
           </Link>
+          <InstallButton />
         </div>
 
+        <div className="flex items-center gap-2 sm:hidden">
+          <InstallButton />
         <button
           type="button"
           aria-label="Toggle menu"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className="rounded-md border border-neutral-800 p-2 sm:hidden"
+          className="rounded-md border border-neutral-800 p-2"
         >
           <svg
             viewBox="0 0 24 24"
@@ -70,6 +74,7 @@ export function Navbar() {
             )}
           </svg>
         </button>
+        </div>
       </nav>
 
       {open && (
