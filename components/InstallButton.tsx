@@ -71,9 +71,17 @@ export function InstallButton({ className = "" }: { className?: string }) {
         onClick={handleClick}
         aria-label="Install Toolhub app"
         className={
-          "inline-flex items-center gap-1.5 rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-sm font-medium text-emerald-300 hover:bg-emerald-500/20 " +
+          "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-transform active:scale-[0.97] " +
           className
         }
+        style={{
+          border: "1px solid rgba(34,197,94,0.3)",
+          background: "var(--color-accent-dim)",
+          color: "var(--color-accent)",
+          transitionProperty: "transform, background-color, border-color",
+          transitionDuration: "var(--duration-fast)",
+          transitionTimingFunction: "var(--ease-out)",
+        }}
       >
         <svg
           viewBox="0 0 24 24"
@@ -82,7 +90,7 @@ export function InstallButton({ className = "" }: { className?: string }) {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="h-4 w-4"
+          className="h-3.5 w-3.5"
           aria-hidden
         >
           <path d="M12 3v12" />
@@ -96,39 +104,49 @@ export function InstallButton({ className = "" }: { className?: string }) {
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4 sm:items-center"
+          className="animate-fade-in fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center"
+          style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)" }}
           onClick={() => setShowIosHint(false)}
         >
           <div
-            className="w-full max-w-sm rounded-xl border border-neutral-800 bg-neutral-950 p-5 text-sm text-neutral-200 shadow-xl"
+            className="animate-scale-in w-full max-w-sm rounded-2xl p-6 text-sm shadow-2xl"
+            style={{
+              border: "1px solid var(--color-border-strong)",
+              background: "var(--color-surface)",
+              color: "var(--color-text)",
+            }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="mb-2 text-base font-semibold text-neutral-100">
+            <h3
+              className="text-base font-semibold"
+              style={{ color: "var(--color-text)", letterSpacing: "-0.01em" }}
+            >
               Install Toolhub
             </h3>
             {isIos ? (
-              <p className="text-neutral-400">
-                Tap the <span className="font-medium text-neutral-200">Share</span> icon
-                in Safari, then choose{" "}
-                <span className="font-medium text-neutral-200">Add to Home Screen</span>.
+              <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
+                Tap the <span style={{ color: "var(--color-text)" }}>Share</span> icon in
+                Safari, then choose{" "}
+                <span style={{ color: "var(--color-text)" }}>Add to Home Screen</span>.
               </p>
             ) : (
-              <p className="text-neutral-400">
+              <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
                 Open your browser menu and tap{" "}
-                <span className="font-medium text-neutral-200">
-                  Install app
-                </span>{" "}
-                or{" "}
-                <span className="font-medium text-neutral-200">
-                  Add to Home screen
-                </span>
-                .
+                <span style={{ color: "var(--color-text)" }}>Install app</span> or{" "}
+                <span style={{ color: "var(--color-text)" }}>Add to Home screen</span>.
               </p>
             )}
             <button
               type="button"
               onClick={() => setShowIosHint(false)}
-              className="mt-4 w-full rounded-md bg-emerald-500 px-3 py-2 font-medium text-neutral-950 hover:bg-emerald-400"
+              className="mt-5 w-full rounded-lg px-4 py-2.5 font-medium transition-transform active:scale-[0.98]"
+              style={{
+                background: "var(--color-accent)",
+                color: "var(--color-bg)",
+                minHeight: "44px",
+                transitionProperty: "transform",
+                transitionDuration: "160ms",
+              }}
             >
               Got it
             </button>
