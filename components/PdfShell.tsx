@@ -27,9 +27,16 @@ export function PdfShell({
 
   return (
     <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{title}</h1>
-        <p className="mt-2 text-neutral-400">{description}</p>
+      <div className="mb-8">
+        <h1
+          className="text-2xl font-semibold sm:text-3xl"
+          style={{ color: "var(--color-text)", letterSpacing: "-0.02em" }}
+        >
+          {title}
+        </h1>
+        <p className="mt-1.5 text-sm" style={{ color: "var(--color-text-muted)" }}>
+          {description}
+        </p>
       </div>
 
       <div
@@ -44,31 +51,42 @@ export function PdfShell({
           handle(e.dataTransfer.files);
         }}
         onClick={() => inputRef.current?.click()}
-        className={
-          "cursor-pointer rounded-xl border-2 border-dashed p-10 text-center transition " +
-          (drag
-            ? "border-emerald-500 bg-emerald-500/5"
-            : "border-neutral-800 hover:border-neutral-700")
-        }
+        className="cursor-pointer rounded-2xl p-10 text-center transition-all"
+        style={{
+          border: `1.5px dashed ${drag ? "var(--color-accent)" : "var(--color-border)"}`,
+          background: drag ? "var(--color-accent-dim)" : "var(--color-surface)",
+          transitionProperty: "border-color, background-color, transform",
+          transitionDuration: "var(--duration-fast)",
+          transitionTimingFunction: "var(--ease-out)",
+        }}
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="mx-auto h-10 w-10 text-neutral-500"
+        <div
+          className="mx-auto grid h-12 w-12 place-items-center rounded-xl"
+          style={{
+            border: "1px solid var(--color-border)",
+            background: "var(--color-surface-raised)",
+            color: drag ? "var(--color-accent)" : "var(--color-text-faint)",
+          }}
         >
-          <path d="M12 3v12" />
-          <path d="m7 10 5-5 5 5" />
-          <path d="M5 21h14" />
-        </svg>
-        <p className="mt-3 text-sm text-neutral-300">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-5 w-5"
+          >
+            <path d="M12 3v12" />
+            <path d="m7 10 5-5 5 5" />
+            <path d="M5 21h14" />
+          </svg>
+        </div>
+        <p className="mt-4 text-sm font-medium" style={{ color: "var(--color-text)" }}>
           Click or drop {multiple ? "PDF files" : "a PDF file"} here
         </p>
-        <p className="mt-1 text-xs text-neutral-500">
-          Files are processed in your browser — nothing is uploaded.
+        <p className="mt-1 text-xs" style={{ color: "var(--color-text-faint)" }}>
+          Files are processed entirely in your browser — zero data leaves your device.
         </p>
         <input
           ref={inputRef}
@@ -80,7 +98,7 @@ export function PdfShell({
         />
       </div>
 
-      {children}
+      {children && <div className="mt-8">{children}</div>}
     </main>
   );
 }
