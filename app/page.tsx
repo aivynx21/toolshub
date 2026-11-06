@@ -1,264 +1,200 @@
-import { TOOLS, CATEGORIES, CATEGORY_META } from "@/lib/tools";
-import { ToolsExplorer } from "@/components/ToolsExplorer";
 import Link from "next/link";
+import {
+  ArrowRight,
+  Cursor,
+  DeviceMobile,
+  LockKey,
+  Plus,
+  Stack,
+  UserMinus,
+} from "@phosphor-icons/react/dist/ssr";
+import { CATEGORIES, CATEGORY_COLOR, CATEGORY_META, TOOLS } from "@/lib/tools";
+import { ToolsExplorer } from "@/components/ToolsExplorer";
+import { ToolIcon } from "@/components/ToolIcon";
+import { Reveal } from "@/components/Reveal";
+import { TaglineReveal } from "@/components/TaglineReveal";
 
-/** Category icon glyphs — refined inline SVG, no emoji */
-const CAT_ICON: Record<string, React.ReactNode> = {
-  Health: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-      strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden>
-      <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z" />
-    </svg>
-  ),
-  Finance: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-      strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden>
-      <circle cx="9" cy="9" r="5" />
-      <path d="M15 9a5 5 0 1 1 0 10 5 5 0 0 1-4-2" />
-    </svg>
-  ),
-  Everyday: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-      strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden>
-      <rect x="4" y="3" width="16" height="18" rx="2" />
-      <path d="M8 7h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h8" />
-    </svg>
-  ),
-  Utilities: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-      strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden>
-      <rect x="3" y="3" width="7" height="7" rx="1" />
-      <rect x="14" y="3" width="7" height="7" rx="1" />
-      <rect x="3" y="14" width="7" height="7" rx="1" />
-      <path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20h1" />
-    </svg>
-  ),
-  PDF: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-      strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden>
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <path d="M14 2v6h6" />
-      <path d="M8 13h1M8 17h4M12 13h4" />
-    </svg>
-  ),
-};
+const BENEFITS = [
+  { icon: LockKey, title: "Your files stay with you", body: "PDF tools run inside your browser. Nothing is uploaded, so a contract or a payslip never touches a server." },
+  { icon: UserMinus, title: "No account to create", body: "Open a tool and use it. There is no signup wall, no email capture and no trial clock." },
+  { icon: Stack, title: "One place for the odd jobs", body: "Merge a PDF, generate a password and check an exchange rate without hunting for a new site each time." },
+  { icon: DeviceMobile, title: "Works on your phone too", body: "Every tool is built mobile first, and you can install Toolhub to your home screen in one tap." },
+];
 
-const CAT_PALETTE: Record<string, { bg: string; fg: string }> = {
-  Health:    { bg: "rgba(34,197,94,0.08)",   fg: "#22c55e" },
-  Finance:   { bg: "rgba(251,191,36,0.08)",  fg: "#fbbf24" },
-  Everyday:  { bg: "rgba(56,189,248,0.08)",  fg: "#38bdf8" },
-  Utilities: { bg: "rgba(244,114,182,0.08)", fg: "#f472b4" },
-  PDF:       { bg: "rgba(251,113,133,0.08)", fg: "#fb7185" },
+const STEPS = [
+  { n: "01", title: "Find your tool", body: "Search by what you want to do, or filter by category." },
+  { n: "02", title: "Enter values or drop a file", body: "Results update as you type. Files are read on your device." },
+  { n: "03", title: "Copy or download", body: "Take the answer with you and close the tab. That is the whole flow." },
+];
+
+const FAQ = [
+  { q: "Is Toolhub free?", a: "Yes. Every tool is free to use, with no signup and no usage limits." },
+  { q: "Are my PDF files uploaded anywhere?", a: "No. The PDF tools run in your browser, so your files are read and processed on your own device and never sent to a server." },
+  { q: "Do I need to create an account?", a: "No. There are no accounts. Open a tool and start." },
+  { q: "Does the currency converter need an internet connection?", a: "Yes. It fetches exchange rates, which refresh about once a day. The other tools do not need live data." },
+  { q: "Can I install Toolhub on my phone?", a: "Yes. Use the Install button in the top bar. On iPhone, open the Share menu in Safari and choose Add to Home Screen." },
+  { q: "Who builds Toolhub?", a: "Toolhub is built and maintained by Aivynx." },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
 };
 
 export default function HomePage() {
-  const toolCount = TOOLS.length;
-  const catCount  = CATEGORIES.length;
-
   return (
-    <main className="relative">
-      {/* ── Hero ─────────────────────────────────────────────────────── */}
-      <section
-        className="relative"
-        style={{ borderBottom: "1px solid var(--color-border)" }}
-      >
-        {/* Subtle radial glow — emerald only */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(700px 400px at 50% -60px, rgba(34,197,94,0.07), transparent 70%)",
-          }}
-        />
-
-        <div className="relative mx-auto w-full max-w-6xl px-4 pb-16 pt-16 sm:px-6 sm:pt-24">
-          <div className="mx-auto max-w-3xl text-center">
-            {/* Headline */}
-            <h1
-              className="text-5xl font-semibold leading-tight sm:text-6xl"
-              style={{ letterSpacing: "-0.03em", color: "var(--color-text)" }}
-            >
-              Fast,{" "}
-              <span style={{ color: "var(--color-accent)" }}>focused</span>
-              {" "}tools.
-              <br />
-              All in one place.
-            </h1>
-
-            {/* Subtitle */}
-            <p
-              className="mx-auto mt-5 max-w-xl text-base sm:text-lg leading-relaxed"
-              style={{ color: "var(--color-text-muted)" }}
-            >
-              A curated directory of distraction-free utilities for health,
-              finance, and everyday math. No sign-ups. No pop-ups. Just open and
-              use.
-            </p>
-
-            {/* Stats strip */}
-            <div
-              className="mt-7 inline-flex items-center gap-3 text-xs"
-              style={{
-                color: "var(--color-text-faint)",
-                fontFamily: "var(--font-mono)",
-              }}
-            >
-              <span>{toolCount} tools</span>
-              <span
-                aria-hidden
-                style={{
-                  width: "1px",
-                  height: "12px",
-                  background: "var(--color-border-strong)",
-                  display: "inline-block",
-                }}
-              />
-              <span>{catCount} categories</span>
-              <span
-                aria-hidden
-                style={{
-                  width: "1px",
-                  height: "12px",
-                  background: "var(--color-border-strong)",
-                  display: "inline-block",
-                }}
-              />
-              <span>No sign-ups</span>
-            </div>
+    <main>
+      {/* Hero */}
+      <section className="mx-auto w-full max-w-6xl px-4 pb-16 pt-16 sm:px-6 sm:pt-24">
+        <div className="mx-auto flex max-w-[680px] flex-col items-center text-center">
+          <p className="caption-1 animate-fade-in rounded-full border border-border-strong bg-surface px-3 py-1 text-text-muted">
+            {TOOLS.length} free tools · No signup
+          </p>
+          <h1 className="heading-3 sm:heading-1 hero-text animate-fade-up mt-6" style={{ animationDelay: "80ms" }}>
+            Every small job.
+            <br />
+            One fast tool.
+          </h1>
+          <p className="body-3 animate-fade-up mt-6 max-w-[680px] text-text-muted sm:text-lg" style={{ animationDelay: "160ms" }}>
+            Merge PDFs, work out a SIP, make a QR code or check your BMI. Pick a tool, get the answer and get on with your day.
+          </p>
+          <div className="animate-fade-up mt-8 flex flex-col items-center gap-3" style={{ animationDelay: "240ms" }}>
+            <Link href="#tools" className="btn btn-primary button-md">
+              Browse all tools
+              <ArrowRight size={18} weight="bold" aria-hidden />
+            </Link>
+            <p className="caption-4 text-text-faint">Free forever. PDF files never leave your device.</p>
           </div>
+        </div>
 
-          {/* Explorer */}
-          <div className="mt-12">
-            <ToolsExplorer
-              tools={TOOLS}
-              categories={CATEGORIES as string[]}
-              randomLimit={6}
-            />
-          </div>
+        <div className="mt-16 scroll-mt-24">
+          <ToolsExplorer tools={TOOLS} categories={CATEGORIES as string[]} randomLimit={6} />
         </div>
       </section>
 
-      {/* ── Categories ───────────────────────────────────────────────── */}
-      <section
-        id="categories"
-        style={{ borderBottom: "1px solid var(--color-border)" }}
-      >
-        <div className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
-          {/* Section header */}
-          <div className="mb-8">
-            <h2
-              className="text-2xl font-semibold"
-              style={{ color: "var(--color-text)", letterSpacing: "-0.02em" }}
-            >
-              Browse by category
-            </h2>
-            <p
-              className="mt-1 text-sm"
-              style={{ color: "var(--color-text-muted)" }}
-            >
-              Every tool runs entirely in your browser — no data leaves your device.
-            </p>
-          </div>
+      {/* Tagline reveal (B11) */}
+      <section className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6" aria-label="Our promise">
+        <TaglineReveal lines={["No signup. No uploads.", "Just the tool you came for."]} />
+      </section>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {CATEGORY_META.map((cat) => {
-              const count   = TOOLS.filter((t) => t.category === cat.name).length;
-              const palette = CAT_PALETTE[cat.name] ?? { bg: "rgba(255,255,255,0.06)", fg: "var(--color-text-muted)" };
-              return (
-                <Link
-                  key={cat.slug}
-                  href={`/categories/${cat.slug}`}
-                  className="group category-card flex items-start gap-4 rounded-xl p-5"
-                >
-                  {/* Category icon */}
-                  <div
-                    className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-lg"
-                    style={{ background: palette.bg, color: palette.fg }}
-                  >
-                    {CAT_ICON[cat.name]}
+      {/* Benefits */}
+      <section className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6">
+        <Reveal>
+          <h2 className="heading-4 sm:heading-3 max-w-[680px]">Built for the five minute job</h2>
+          <p className="body-3 mt-4 max-w-[680px] text-text-muted">
+            Most web tools bury the answer under ads and sign in prompts. Toolhub keeps the page empty so the answer is the loudest thing on it.
+          </p>
+        </Reveal>
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+          {BENEFITS.map((b, i) => (
+            <li key={b.title}>
+              <Reveal delay={i * 60} className="h-full">
+                <div className="h-full rounded-2xl border border-border bg-surface p-6">
+                  <div className="grid h-10 w-10 place-items-center rounded-lg bg-surface-hover text-accent">
+                    <b.icon size={20} weight="duotone" aria-hidden />
                   </div>
+                  <h3 className="title-2 mt-6">{b.title}</h3>
+                  <p className="body-6 mt-2 text-text-muted">{b.body}</p>
+                </div>
+              </Reveal>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-                  {/* Text */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline justify-between gap-2">
-                      <span
-                        className="text-base font-semibold group-hover:text-[var(--color-accent)]"
-                        style={{
-                          color: "var(--color-text)",
-                          letterSpacing: "-0.01em",
-                          transition: "color var(--duration-fast)",
-                        }}
-                      >
-                        {cat.name}
-                      </span>
-                      <span
-                        className="shrink-0 text-xs"
-                        style={{ color: "var(--color-text-faint)", fontFamily: "var(--font-mono)" }}
-                      >
-                        {count} tool{count === 1 ? "" : "s"}
-                      </span>
+      {/* How it works */}
+      <section className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6">
+        <Reveal>
+          <h2 className="heading-4 sm:heading-3">How it works</h2>
+        </Reveal>
+        <ol className="mt-10 grid gap-4 md:grid-cols-3">
+          {STEPS.map((s, i) => (
+            <li key={s.n}>
+              <Reveal delay={i * 60} className="h-full">
+                <div className="h-full rounded-2xl border border-border p-6">
+                  <span className="font-mono caption-3 text-accent">{s.n}</span>
+                  <h3 className="title-1 mt-6">{s.title}</h3>
+                  <p className="body-6 mt-2 text-text-muted">{s.body}</p>
+                </div>
+              </Reveal>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* Categories */}
+      <section id="categories" className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6">
+        <Reveal>
+          <h2 className="heading-4 sm:heading-3">Browse by category</h2>
+          <p className="body-3 mt-4 max-w-[680px] text-text-muted">Know the kind of job but not the tool? Start here.</p>
+        </Reveal>
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {CATEGORY_META.map((cat, i) => {
+            const count = TOOLS.filter((t) => t.category === cat.name).length;
+            return (
+              <li key={cat.slug}>
+                <Reveal delay={i * 60} className="h-full">
+                  <Link href={`/categories/${cat.slug}`} className="card group flex h-full items-start gap-4 rounded-2xl p-6">
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg" style={{ background: "var(--color-surface-hover)", color: CATEGORY_COLOR[cat.name] }}>
+                      <ToolIcon name={cat.icon} />
                     </div>
-                    <p
-                      className="mt-0.5 text-sm leading-snug"
-                      style={{ color: "var(--color-text-muted)" }}
-                    >
-                      {cat.tagline}
-                    </p>
-                  </div>
-
-                  {/* Arrow */}
-                  <svg
-                    className="mt-1 h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--color-accent)]"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    style={{
-                      color: "var(--color-text-faint)",
-                      transition: "transform var(--duration-fast) var(--ease-out), color var(--duration-fast)",
-                    }}
-                    aria-hidden
-                  >
-                    <path d="M5 12h14M13 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="title-2">{cat.name}</span>
+                        <span className="font-mono caption-5 text-text-faint">{count} tool{count === 1 ? "" : "s"}</span>
+                      </div>
+                      <p className="body-6 mt-1 text-text-muted">{cat.tagline}</p>
+                    </div>
+                  </Link>
+                </Reveal>
+              </li>
+            );
+          })}
+        </ul>
       </section>
 
-      {/* ── Footer ───────────────────────────────────────────────────── */}
-      <footer className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
-        <div
-          className="flex flex-col items-center justify-between gap-3 text-xs sm:flex-row"
-          style={{ color: "var(--color-text-faint)" }}
-        >
-          <span
-            style={{
-              fontFamily: "var(--font-mono)",
-              color: "var(--color-text-faint)",
-            }}
-          >
-            Toolhub — {toolCount} tools, zero fluff
-          </span>
-          <span>
-            Built by{" "}
-            <a
-              href="https://aivynx.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] underline underline-offset-4 transition-colors"
-              style={{ transitionDuration: "var(--duration-fast)" }}
-            >
-              Aivynx
-            </a>
-          </span>
-        </div>
-      </footer>
+      {/* FAQ */}
+      <section id="faq" className="mx-auto w-full max-w-3xl px-4 py-24 sm:px-6">
+        <Reveal>
+          <h2 className="heading-4 sm:heading-3">Questions, answered</h2>
+        </Reveal>
+        <Reveal className="mt-10">
+          <div className="divide-y divide-border rounded-2xl border border-border bg-surface">
+            {FAQ.map((f) => (
+              <details key={f.q} className="group px-6">
+                <summary className="title-3 flex items-center justify-between gap-4 py-4 text-left">
+                  {f.q}
+                  <Plus size={18} weight="bold" className="faq-icon shrink-0 text-text-muted" aria-hidden />
+                </summary>
+                <p className="body-6 pb-6 text-text-muted">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </Reveal>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      </section>
+
+      {/* Final CTA, identical to the top */}
+      <section className="mx-auto w-full max-w-6xl px-4 pb-8 sm:px-6">
+        <Reveal>
+          <div className="flex flex-col items-center rounded-2xl border border-border-strong bg-surface px-6 py-16 text-center">
+            <h2 className="heading-4 sm:heading-3 max-w-[680px]">Got a job to get done?</h2>
+            <p className="body-3 mt-4 max-w-[680px] text-text-muted">Pick a tool and be finished before this page would have loaded elsewhere.</p>
+            <Link href="#tools" className="btn btn-primary button-md mt-8">
+              Browse all tools
+              <ArrowRight size={18} weight="bold" aria-hidden />
+            </Link>
+            <p className="caption-4 mt-4 flex items-center gap-1 text-text-faint">
+              <Cursor size={14} aria-hidden /> Free forever. No signup.
+            </p>
+          </div>
+        </Reveal>
+      </section>
     </main>
   );
 }

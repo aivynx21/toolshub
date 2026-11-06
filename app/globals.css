@@ -2,183 +2,194 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Design Tokens ─────────────────────────────────────────────────── */
+/* Design tokens — Part B of SKILL.md */
 :root {
-  /* Easing */
-  --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* Duration */
-  --duration-fast: 150ms;
-  --duration-base: 250ms;
-  --duration-slow: 400ms;
+  /* Dark backgrounds: only the approved set (B4) */
+  --color-bg: #000000;
+  --color-surface: #181818;
+  --color-surface-raised: #1f1f1f;
+  --color-surface-hover: #272727;
+  --color-border-strong: #313131;
+  --color-border: #272727;
 
-  /* Color */
-  --color-bg:             #080808;
-  --color-surface:        #111111;
-  --color-surface-raised: #161616;
-  --color-border:         rgba(255, 255, 255, 0.08);
-  --color-border-strong:  rgba(255, 255, 255, 0.16);
-  --color-text:           #f0f0f0;
-  --color-text-muted:     #8e8e8e;
-  --color-text-faint:     #525252;
-  --color-accent:         #22c55e;
-  --color-accent-dim:     rgba(34, 197, 94, 0.12);
+  --color-text: #f4f4f4;
+  --color-text-muted: #a8a8a8;
+  --color-text-faint: #6b6b6b;
+  --color-accent: #22c55e;
+  --color-accent-dim: rgba(34, 197, 94, 0.14);
 
-  /* Typography */
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  /* Spacing tokens (B2) */
+  --space-25: 2px;
+  --space-50: 4px;
+  --space-75: 8px;
+  --space-100: 12px;
+  --space-200: 16px;
+  --space-300: 24px;
+  --space-400: 32px;
+  --space-500: 40px;
+  --space-600: 48px;
+  --space-700: 64px;
+  --space-800: 80px;
+  --space-900: 96px;
 }
 
-/* ─── Base Resets ───────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+}
+
 html,
 body {
   overflow-x: clip;
-  height: 100%;
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.6;
+  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
 
-/* ─── Focus Visible ─────────────────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
-  border-radius: 6px;
 }
 
-/* ─── Keyframes ─────────────────────────────────────────────────────── */
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
+::selection { background: var(--color-accent-dim); color: var(--color-text); }
+
+/* Named text styles (B1). Sizes come from Tailwind's scale, never invented. */
+@layer components {
+  .heading-1 { @apply text-6xl font-semibold; letter-spacing: -0.03em; }
+  .heading-2 { @apply text-5xl font-semibold; letter-spacing: -0.025em; }
+  .heading-3 { @apply text-4xl font-semibold; letter-spacing: -0.02em; }
+  .heading-4 { @apply text-3xl font-semibold; letter-spacing: -0.02em; }
+  .heading-5 { @apply text-2xl font-semibold; letter-spacing: -0.01em; }
+  .heading-6 { @apply text-xl font-semibold; }
+  .title-1 { @apply text-xl font-medium; }
+  .title-2 { @apply text-lg font-medium; }
+  .title-3 { @apply text-base font-medium; }
+  .title-4 { @apply text-sm font-medium; }
+  .title-5 { @apply text-xs font-medium; }
+  .body-1 { @apply text-base font-semibold; }
+  .body-2 { @apply text-base font-medium; }
+  .body-3 { @apply text-base font-normal; }
+  .body-4 { @apply text-sm font-semibold; }
+  .body-5 { @apply text-sm font-medium; }
+  .body-6 { @apply text-sm font-normal; }
+  .button-lg { @apply text-lg font-semibold; }
+  .button-md { @apply text-base font-semibold; }
+  .button-sm { @apply text-sm font-semibold; }
+  .button-xsm { @apply text-xs font-semibold; }
+  .caption-1 { @apply text-sm font-medium; }
+  .caption-2 { @apply text-sm font-normal; }
+  .caption-3 { @apply text-xs font-semibold; }
+  .caption-4 { @apply text-xs font-medium; }
+  .caption-5 { @apply text-xs font-normal; }
+
+  /* Hero heading: left to right gradient on text only (B5) */
+  .hero-text {
+    background-image: linear-gradient(to right, #ffffff, #9b9b9b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  /* Buttons: 8px / 12px padding (B2). Hover, active, focus all present (B9). */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg;
+    padding: var(--space-75) var(--space-100);
+    transition: transform 300ms var(--ease), background-color 300ms var(--ease),
+      color 300ms var(--ease), border-color 300ms var(--ease);
   }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.97);
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--color-accent); color: #000; }
+  .btn-primary:hover { background: #4ade80; }
+  .btn-secondary {
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    border: 1px solid var(--color-border-strong);
   }
-  to {
-    opacity: 1;
-    transform: scale(1);
+  .btn-secondary:hover { background: var(--color-surface-hover); }
+
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    transition: transform 500ms var(--ease), background-color 300ms var(--ease),
+      border-color 300ms var(--ease);
   }
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
+  .card:hover {
+    transform: translateY(-4px);
+    background: var(--color-surface-raised);
+    border-color: var(--color-border-strong);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .card:active { transform: translateY(0) scale(0.99); }
+
+  .nav-link {
+    color: var(--color-text-muted);
+    transition: color 300ms var(--ease), background-color 300ms var(--ease);
   }
+  .nav-link:hover { color: var(--color-text); background: var(--color-surface-raised); }
+  .nav-link[aria-current="page"] { color: var(--color-text); }
 }
 
-/* ─── Animation Utilities ───────────────────────────────────────────── */
-.animate-fade-up {
-  animation: fadeUp var(--duration-slow) var(--ease-out) both;
-  animation-delay: calc(var(--stagger, 0) * 30ms);
+/* Motion (B7): transform and opacity only */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(32px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-.animate-fade-in {
-  animation: fadeIn var(--duration-base) var(--ease-out) both;
+.animate-fade-up { animation: rise 600ms var(--ease) both; }
+.animate-fade-in { animation: fade 300ms var(--ease) both; }
+.animate-scale-in { animation: pop 300ms var(--ease) both; }
+.animate-slide-down { animation: fade 300ms var(--ease) both; }
+
+/* Scroll reveal: set by IntersectionObserver in <Reveal>, once only */
+.reveal { opacity: 0; transform: translateY(32px); }
+.reveal.in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 700ms var(--ease), transform 700ms var(--ease);
 }
 
-.animate-scale-in {
-  animation: scaleIn 300ms var(--ease-out) both;
-}
+/* Tagline reveal words (B11) */
+.tw { opacity: 0.3; transition: opacity 500ms var(--ease); }
+.tw.on { opacity: 1; }
 
-.animate-slide-down {
-  animation: slideDown 200ms var(--ease-out) both;
+/* Skeleton loader */
+.skeleton {
+  background: var(--color-surface-raised);
+  border-radius: 8px;
+  animation: pulse 1.6s var(--ease) infinite;
 }
+@keyframes pulse { 50% { opacity: 0.5; } }
 
-/* ─── Micro-Interactions (Pure CSS) ─────────────────────────────────── */
-.tool-card {
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
-}
-.tool-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--color-border-strong);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-}
-.tool-card:active {
-  transform: scale(0.98);
-}
+/* FAQ */
+details > summary { list-style: none; cursor: pointer; }
+details > summary::-webkit-details-marker { display: none; }
+details[open] .faq-icon { transform: rotate(45deg); }
+.faq-icon { transition: transform 300ms var(--ease); }
 
-.category-card {
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
-}
-.category-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--color-border-strong);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-}
-.category-card:active {
-  transform: scale(0.98);
-}
-
-.action-btn {
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out), transform 160ms var(--ease-out);
-}
-.action-btn:hover {
-  border-color: var(--color-border-strong);
-  color: var(--color-text);
-}
-.action-btn:active {
-  transform: scale(0.97);
-}
-
-.nav-link {
-  color: var(--color-text-muted);
-  transition: color var(--duration-fast) var(--ease-out);
-}
-.nav-link:hover {
-  color: var(--color-text);
-}
-
-/* ─── Reduced Motion ────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  .reveal { transform: none; }
+  .tw { opacity: 1; }
 }

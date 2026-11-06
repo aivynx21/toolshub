@@ -26,7 +26,7 @@ export const TOOLS: Tool[] = [
     slug: "bmi",
     name: "BMI Calculator",
     description:
-      "Quickly estimate your Body Mass Index with units in metric or imperial, plus a healthy-weight range.",
+      "Quickly estimate your Body Mass Index with units in metric or imperial, plus a healthy weight range.",
     category: "Health",
     tags: ["health", "fitness", "weight", "metric", "imperial"],
     href: "/tools/bmi",
@@ -37,7 +37,7 @@ export const TOOLS: Tool[] = [
     slug: "calculator",
     name: "Calculator",
     description:
-      "A clean, keyboard-friendly scientific-style calculator for everyday arithmetic.",
+      "A clean, keyboard friendly calculator for everyday arithmetic.",
     category: "Everyday",
     tags: ["math", "arithmetic", "basic"],
     href: "/tools/calculator",
@@ -61,7 +61,7 @@ export const TOOLS: Tool[] = [
     description:
       "Project SIP, lumpsum, and step-up investments with year-by-year growth and gains.",
     category: "Finance",
-    tags: ["investment", "sip", "mutual-funds", "returns"],
+    tags: ["investment", "sip", "mutual funds", "returns"],
     href: "/tools/sip",
     accent: "from-violet-500/20 to-violet-500/0 text-violet-400",
     icon: "chart",
@@ -92,7 +92,7 @@ export const TOOLS: Tool[] = [
     slug: "token",
     name: "Token Generator",
     description:
-      "Generate secure API tokens, UUIDs, hex, base64url, and nanoid-style IDs with optional prefix and batch output.",
+      "Generate secure API tokens, UUIDs, hex, base64url, and nanoid IDs with optional prefix and batch output.",
     category: "Utilities",
     tags: ["token", "api", "uuid", "hex", "base64", "nanoid"],
     href: "/tools/token",
@@ -144,7 +144,7 @@ export const CATEGORY_META: CategoryMeta[] = [
     description:
       "Private health utilities that run entirely in your browser — no accounts, no tracking, no data leaves your device.",
     whenToUse: [
-      "Estimating body composition with BMI and healthy-weight ranges",
+      "Estimating body composition with BMI and healthy weight ranges",
       "Converting between metric and imperial units for height and weight",
       "Interpreting health metrics without sharing personal data online",
     ],
@@ -218,3 +218,12 @@ export function getCategoryBySlug(slug: string): CategoryMeta | undefined {
 export function getToolsByCategory(name: CategoryName): Tool[] {
   return TOOLS.filter((t) => t.category === name);
 }
+
+/** One accent colour per category, used for icon glyphs only (tiles stay flat). */
+export const CATEGORY_COLOR: Record<CategoryName, string> = {
+  Health: "#22c55e",
+  Finance: "#fbbf24",
+  Everyday: "#38bdf8",
+  Utilities: "#f472b6",
+  PDF: "#fb7185",
+};

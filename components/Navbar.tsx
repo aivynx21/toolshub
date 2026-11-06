@@ -1,105 +1,57 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { SquaresFour } from "@phosphor-icons/react";
 import { InstallButton } from "./InstallButton";
 
-/** Geometric grid icon — inline SVG, no emoji */
-function GridIcon() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 18 18"
-      fill="none"
-      aria-hidden
-    >
-      <rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor" />
-      <rect x="11" y="1" width="6" height="6" rx="1.5" fill="currentColor" />
-      <rect x="1" y="11" width="6" height="6" rx="1.5" fill="currentColor" />
-      <rect
-        x="11"
-        y="11"
-        width="6"
-        height="6"
-        rx="1.5"
-        fill="currentColor"
-        opacity="0.4"
-      />
-    </svg>
-  );
-}
-
 const NAV_LINKS = [
-  { label: "Home",       href: "/" },
-  { label: "Tools",      href: "/#tools" },
+  { label: "Home", href: "/" },
+  { label: "Tools", href: "/#tools" },
   { label: "Categories", href: "/#categories" },
+  { label: "FAQ", href: "/#faq" },
 ];
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  useEffect(() => setOpen(false), [pathname]);
 
   return (
-    <header
-      className="sticky top-0 z-40"
-      style={{
-        borderBottom: "1px solid var(--color-border)",
-        background: "rgba(8,8,8,0.90)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-      }}
-    >
-      <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-        {/* Logo */}
-        <Link
-          href="/"
-          onClick={() => setOpen(false)}
-          className="flex items-center gap-2.5 font-semibold tracking-tight"
-          style={{ color: "var(--color-text)" }}
-        >
-          <span
-            className="grid h-7 w-7 place-items-center rounded-lg"
-            style={{
-              background: "var(--color-accent)",
-              color: "var(--color-bg)",
-            }}
-          >
-            <GridIcon />
+    <header className="sticky top-0 z-50 px-4 pt-4">
+      <nav
+        aria-label="Main"
+        className="mx-auto flex w-full max-w-3xl items-center justify-between rounded-2xl border border-border-strong py-2 pl-4 pr-2"
+        style={{ background: "rgba(24,24,24,0.72)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}
+      >
+        <Link href="/" className="title-3 flex items-center gap-2" aria-current={pathname === "/" ? "page" : undefined}>
+          <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent text-black">
+            <SquaresFour size={18} weight="fill" aria-hidden />
           </span>
-          <span className="text-[15px]">Toolhub</span>
+          Toolhub
         </Link>
 
-        {/* Desktop nav */}
         <div className="hidden items-center gap-1 sm:flex">
-          {NAV_LINKS.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="nav-link rounded-md px-3 py-1.5 text-sm"
-            >
+          {NAV_LINKS.slice(1).map((l) => (
+            <Link key={l.href} href={l.href} className="nav-link title-4 rounded-lg px-3 py-2">
               {l.label}
             </Link>
           ))}
-
-          <div className="ml-2 flex items-center gap-2">
-            <InstallButton />
-            <Link
-              href="/#tools"
-              className="inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-sm font-medium transition-transform active:scale-[0.97]"
-              style={{
-                background: "var(--color-accent)",
-                color: "var(--color-bg)",
-                transitionProperty: "transform",
-                transitionDuration: "160ms",
-                transitionTimingFunction: "var(--ease-out)",
-              }}
-            >
-              Browse tools
-            </Link>
-          </div>
+          <InstallButton />
+          <Link href="/#tools" className="btn btn-primary button-sm ml-1">
+            Browse tools
+          </Link>
         </div>
 
-        {/* Mobile row */}
         <div className="flex items-center gap-2 sm:hidden">
           <InstallButton />
           <button
@@ -108,68 +60,50 @@ export function Navbar() {
             aria-expanded={open}
             aria-controls="mobile-menu"
             onClick={() => setOpen((v) => !v)}
-            className="grid h-9 w-9 place-items-center rounded-lg transition-transform active:scale-[0.95]"
-            style={{
-              border: "1px solid var(--color-border)",
-              color: "var(--color-text-muted)",
-              transitionProperty: "transform",
-              transitionDuration: "160ms",
-              transitionTimingFunction: "var(--ease-out)",
-            }}
+            className="relative grid h-10 w-10 place-items-center rounded-lg border border-border-strong transition-transform duration-300 ease-base active:scale-95"
           >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              className="h-5 w-5"
-              aria-hidden
-            >
-              {open ? (
-                <path d="M6 6l12 12M18 6L6 18" />
-              ) : (
-                <path d="M4 7h16M4 12h16M4 17h16" />
-              )}
-            </svg>
+            <span
+              className="absolute h-0.5 w-5 rounded-full bg-text transition-transform duration-500 ease-base"
+              style={{ transform: open ? "rotate(45deg)" : "translateY(-4px)" }}
+            />
+            <span
+              className="absolute h-0.5 w-5 rounded-full bg-text transition-transform duration-500 ease-base"
+              style={{ transform: open ? "rotate(-45deg)" : "translateY(4px)" }}
+            />
           </button>
         </div>
       </nav>
 
-      {/* Mobile menu */}
-      {open && (
-        <div
-          id="mobile-menu"
-          className="animate-slide-down sm:hidden"
-          style={{ borderTop: "1px solid var(--color-border)" }}
-        >
-          <div className="mx-auto flex max-w-6xl flex-col gap-0.5 px-4 py-2.5">
-            {NAV_LINKS.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="nav-link rounded-lg px-3 py-2.5 text-sm"
-              >
-                {l.label}
-              </Link>
-            ))}
-            <Link
-              href="/#tools"
-              onClick={() => setOpen(false)}
-              className="mt-1 inline-flex items-center justify-center rounded-lg px-3.5 py-2.5 text-sm font-medium transition-transform active:scale-[0.97]"
-              style={{
-                background: "var(--color-accent)",
-                color: "var(--color-bg)",
-                transitionProperty: "transform",
-                transitionDuration: "160ms",
-              }}
-            >
-              Browse tools
-            </Link>
-          </div>
-        </div>
-      )}
+      <div
+        id="mobile-menu"
+        aria-hidden={!open}
+        inert={!open}
+        className="fixed inset-0 -z-10 flex flex-col justify-center gap-2 px-6 transition-opacity duration-500 ease-base sm:hidden"
+        style={{
+          background: "rgba(0,0,0,0.94)",
+          backdropFilter: "blur(32px)",
+          WebkitBackdropFilter: "blur(32px)",
+          opacity: open ? 1 : 0,
+          pointerEvents: open ? "auto" : "none",
+        }}
+      >
+        {NAV_LINKS.map((l, i) => (
+          <Link
+            key={l.href}
+            href={l.href}
+            onClick={() => setOpen(false)}
+            aria-current={l.href === pathname ? "page" : undefined}
+            className="heading-4 py-2 text-text-muted transition-[opacity,transform,color] duration-500 ease-base aria-[current=page]:text-text"
+            style={{
+              opacity: open ? 1 : 0,
+              transform: open ? "none" : "translateY(24px)",
+              transitionDelay: open ? `${Math.min(i * 60, 400)}ms` : "0ms",
+            }}
+          >
+            {l.label}
+          </Link>
+        ))}
+      </div>
     </header>
   );
 }
