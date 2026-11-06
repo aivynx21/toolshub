@@ -1,5 +1,7 @@
 "use client";
 
+import { DownloadSimple } from "@phosphor-icons/react";
+
 import { useEffect, useState } from "react";
 
 type BeforeInstallPromptEvent = Event & {
@@ -70,33 +72,9 @@ export function InstallButton({ className = "" }: { className?: string }) {
         type="button"
         onClick={handleClick}
         aria-label="Install Toolhub app"
-        className={
-          "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-transform active:scale-[0.97] " +
-          className
-        }
-        style={{
-          border: "1px solid rgba(34,197,94,0.3)",
-          background: "var(--color-accent-dim)",
-          color: "var(--color-accent)",
-          transitionProperty: "transform, background-color, border-color",
-          transitionDuration: "var(--duration-fast)",
-          transitionTimingFunction: "var(--ease-out)",
-        }}
+        className={"btn btn-secondary button-sm " + className}
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="h-3.5 w-3.5"
-          aria-hidden
-        >
-          <path d="M12 3v12" />
-          <path d="m7 10 5 5 5-5" />
-          <path d="M5 21h14" />
-        </svg>
+        <DownloadSimple size={16} weight="bold" aria-hidden />
         <span>Install</span>
       </button>
 
@@ -118,8 +96,7 @@ export function InstallButton({ className = "" }: { className?: string }) {
             onClick={(e) => e.stopPropagation()}
           >
             <h3
-              className="text-base font-semibold"
-              style={{ color: "var(--color-text)", letterSpacing: "-0.01em" }}
+              className="heading-6"
             >
               Install Toolhub
             </h3>
@@ -139,14 +116,7 @@ export function InstallButton({ className = "" }: { className?: string }) {
             <button
               type="button"
               onClick={() => setShowIosHint(false)}
-              className="mt-5 w-full rounded-lg px-4 py-2.5 font-medium transition-transform active:scale-[0.98]"
-              style={{
-                background: "var(--color-accent)",
-                color: "var(--color-bg)",
-                minHeight: "44px",
-                transitionProperty: "transform",
-                transitionDuration: "160ms",
-              }}
+              className="btn btn-primary button-md mt-5 w-full"
             >
               Got it
             </button>
